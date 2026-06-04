@@ -3,24 +3,18 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/wasm-compiler-edge';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { randomUUID } from 'crypto';
+import { User } from '../../generated/browser';
+import { RegisterDto } from '../auth/dto/register.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
-  async create(dto: CreateUserDto) {
-    const passwordHash = await bcrypt.hash(dto.password, 10);
-
+  constructor(private readonly prisma: PrismaService) {}
+  async createUserByRegister(dto: RegisterDto, passwordHash: string) {
+    let user: User;
     try {
-      const user = await this.prisma.user.create({
+      user = await this.prisma.user.create({
         data: {
           name: dto.name,
           email: dto.email,
@@ -28,17 +22,7 @@ export class UserService {
           passwordHash,
         },
       });
-      this.eventEmitter.emit('user.registered', {
-        userId: user.id,
-        email: user.email,
-      });
-      const transactionId = randomUUID();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-      return {
-        transactionId,
-        message: 'Verification code has been successfully dispatched.',
-        expiresAt,
-      };
+      return user;
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
@@ -46,7 +30,7 @@ export class UserService {
       ) {
         throw new ConflictException('Email already in use');
       }
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Failed to create user');
     }
   }
 }
