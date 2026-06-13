@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { DoctorsModule } from './modules/doctors/doctors.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
     PrismaModule,
     UserModule,
     AuthModule,
+    DoctorsModule,
   ],
 })
 export class AppModule {}

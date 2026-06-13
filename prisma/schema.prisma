@@ -4,9 +4,9 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated"
-  moduleFormat    = "cjs"
+  provider     = "prisma-client"
+  output       = "../src/generated"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -22,6 +22,28 @@ model User {
   status       UserStatus @default(PENDING_VERIFICATION)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+}
+
+model Doctor {
+  id          String      @id @default(uuid())
+  name        String
+  specialtyId String
+  gender      Gender
+  title       DoctorTitle
+  location    String
+  price       Float
+  rating      Float       @default(0)
+  viewsCount  Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  @@index([specialtyId, rating])
+  @@index([location, price])
+}
+
+enum DoctorTitle {
+  PROFESSOR
+  CONSULTANT
+  SPECIALIST
 }
 
 enum Gender {
