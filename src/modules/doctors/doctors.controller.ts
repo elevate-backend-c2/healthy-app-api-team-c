@@ -1,4 +1,9 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  // ,UseGuards
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -20,8 +25,13 @@ export class DoctorsController {
   constructor(private readonly doctorsService: DoctorsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get filtered, sorted, and paginated list of doctors' })
-  @ApiOkResponse({ description: 'Doctors list resolved', type: FindDoctorsResponseDto })
+  @ApiOperation({
+    summary: 'Get filtered, sorted, and paginated list of doctors',
+  })
+  @ApiOkResponse({
+    description: 'Doctors list resolved',
+    type: FindDoctorsResponseDto,
+  })
   @ApiBadRequestResponse({ description: 'Query parameter type mismatch' })
   @ApiUnauthorizedResponse({ description: 'Token missing or invalid' })
   findAll(@Query() query: FindDoctorsDto) {

@@ -28,7 +28,9 @@ export class FindDoctorsDto {
   @IsOptional()
   @IsArray()
   @IsUUID('all', { each: true })
-  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  @Transform(
+    ({ value }) => (Array.isArray(value) ? value : [value]) as string[],
+  )
   specialties?: string[];
 
   @ApiPropertyOptional({ enum: Gender })

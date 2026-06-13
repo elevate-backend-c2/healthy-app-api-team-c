@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { FindDoctorsDto, SortBy } from './dto/find-doctors.dto';
 import { Prisma } from '../../generated/client';
+import { FindDoctorsResponseDto } from './dto/doctor-response.dto';
 
 @Injectable()
 export class DoctorsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(query: FindDoctorsDto) {
+  async findAll(query: FindDoctorsDto): Promise<FindDoctorsResponseDto> {
     const where: Prisma.DoctorWhereInput = {};
 
     if (query.specialties?.length) {
