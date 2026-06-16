@@ -23,14 +23,25 @@ export class UserService {
         },
       });
       return user;
-    } catch (error) {
+    } catch (error: unknown) {
       if (
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
         throw new ConflictException('Email already in use');
       }
-      throw new InternalServerErrorException('Failed to create user');
+      if (error instanceof Error) {
+        throw new InternalServerErrorException(error.message);
+      }
+      throw new InternalServerErrorException('Internal server error');
     }
+  }
+
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
   }
 }
