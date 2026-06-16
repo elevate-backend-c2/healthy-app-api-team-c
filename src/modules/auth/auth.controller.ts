@@ -14,11 +14,14 @@ import type { Request } from 'express';
 import { Public } from '../../common/decorators/is-public';
 import { JwtRefreshGuard } from '../../common/guards/jwt.auth.refresh.guard';
 import { RefreshUser } from '../../common/types/request.type';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { VerifyRecoveryOtpDto } from './dto/verify-recovery-otp.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
   @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -66,4 +69,50 @@ export class AuthController {
   refresh(@Req() req: Request & { user: RefreshUser }) {
     return this.authService.refresh(req.user);
   }
+
+  // ─── Password Recovery endpoints ──────────────────────────────────
+
+  @Public()
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Request password recovery OTP' })
+  @ApiBody({ type: ForgotPasswordDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Recovery email sent if account exists.',
+  })
+  @ApiResponse({
+    status: 429,
+    description: 'Cooldown active. Please wait before retrying.',
+  })
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @Public()
+  @Post('verify-recovery-otp')
+  @ApiOperation({ summary: 'Verify password recovery OTP' })
+  @ApiBody({ type: VerifyRecoveryOtpDto })
+  @ApiResponse({ status: 200, description: 'OTP verified successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired OTP.' })
+  @ApiResponse({
+    status: 429,
+    description: 'Too many failed attempts. OTP locked.',
+  })
+  verifyRecoveryOtp(@Body() dto: VerifyRecoveryOtpDto) {
+    return this.authService.verifyRecoveryOtp(dto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password using verified OTP' })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({ status: 200, description: 'Password reset successfully.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid OTP or password validation failed.',
+  })
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
+  }
+
 }

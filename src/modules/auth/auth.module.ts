@@ -8,10 +8,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { RedisService } from '../../common/redis/redis.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt.refresh.stategy';
+import { MailModule } from '../../common/mail/mail.module';
 
 @Module({
   imports: [
     UserModule,
+    MailModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
@@ -27,4 +29,4 @@ import { JwtRefreshStrategy } from './strategies/jwt.refresh.stategy';
     JwtRefreshStrategy,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -10,7 +10,7 @@ import { RegisterDto } from '../auth/dto/register.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
   async createUserByRegister(dto: RegisterDto, passwordHash: string) {
     let user: User;
     try {
@@ -42,6 +42,13 @@ export class UserService {
       where: {
         email,
       },
+    });
+  }
+
+  async updatePassword(userId: string, passwordHash: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
     });
   }
 }
