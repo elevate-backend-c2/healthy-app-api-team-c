@@ -14,7 +14,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import type { Request } from 'express';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
-import { ConfigModule } from './modules/config/config.module';
+import { ConfigurationModule } from './modules/config/config.module';
 
 @Module({
   imports: [
@@ -30,7 +30,8 @@ import { ConfigModule } from './modules/config/config.module';
         ) => {
           return cb(null, './uploads');
         },
-        filename: (req: Request,
+        filename: (
+          req: Request,
           file: Express.Multer.File,
           cb: (error: Error | null, destination: string) => void,
         ) => {
@@ -79,7 +80,7 @@ import { ConfigModule } from './modules/config/config.module';
     UserModule,
     AuthModule,
     DoctorsModule,
-    ConfigModule,
+    ConfigurationModule,
   ],
   controllers: [],
   providers: [
