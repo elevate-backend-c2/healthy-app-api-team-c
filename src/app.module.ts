@@ -14,6 +14,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import type { Request } from 'express';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
+import { ConfigModule } from './modules/config/config.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { randomUUID } from 'crypto';
     UserModule,
     AuthModule,
     DoctorsModule,
+    ConfigModule,
   ],
   controllers: [],
   providers: [
