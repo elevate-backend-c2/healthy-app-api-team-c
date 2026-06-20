@@ -4,13 +4,15 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated"
-  moduleFormat = "cjs"
+  provider        = "prisma-client"
+  output          = "../src/generated"
+  moduleFormat    = "cjs"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [pg_trgm]
 }
 
 model User {
@@ -22,6 +24,7 @@ model User {
   status       UserStatus @default(PENDING_VERIFICATION)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  recentSearches   RecentSearch[]
 }
 
 model Doctor {
@@ -38,6 +41,19 @@ model Doctor {
 
   @@index([specialtyId, rating])
   @@index([location, price])
+  @@index([name])
+}
+
+model RecentSearch {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  term      String   // الاسم اللي ظهر وضغط عليه (اسم دكتور أو اسم تخصص)
+  type      String   // نوع النتيجة: 'doctor' أو 'specialty'
+  targetId  String   // الـ ID بتاع الدكتور أو التخصص
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)]) // Index مركب لضمان جلب أخر 5 بسرعة طلقة
 }
 
 enum DoctorTitle {
