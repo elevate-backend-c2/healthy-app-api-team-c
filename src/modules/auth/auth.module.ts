@@ -28,5 +28,6 @@ import { MailModule } from '../../common/mail/mail.module';
     JwtStrategy,
     JwtRefreshStrategy,
   ],
+  exports: [RedisService],
 })
-export class AuthModule { }
+export class AuthModule {}

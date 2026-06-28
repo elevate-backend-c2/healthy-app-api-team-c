@@ -10,7 +10,7 @@ export interface OtpRecord {
 
 @Injectable()
 export class RedisService {
-  constructor(@InjectRedis() private readonly redis: Redis) { }
+  constructor(@InjectRedis() private readonly redis: Redis) {}
 
   async blacklistToken(jti: string, ttl: number) {
     await this.redis.set(`bl:${jti}`, '1', 'EX', ttl);
@@ -22,10 +22,7 @@ export class RedisService {
   }
 
   async setLastLogin(userId: string) {
-    await this.redis.set(
-      `user:last-login:${userId}`,
-      new Date().toISOString(),
-    );
+    await this.redis.set(`user:last-login:${userId}`, new Date().toISOString());
   }
 
   // ─── OTP Recovery methods ────────────────────────────────────────
@@ -118,5 +115,17 @@ export class RedisService {
   async isUserRevoked(userId: string): Promise<boolean> {
     const result = await this.redis.get(`revoked:user:${userId}`);
     return result === '1';
+  }
+
+  async incrementRateLimit(
+    key: string,
+    windowSeconds: number,
+  ): Promise<{ count: number; ttl: number }> {
+    const count = await this.redis.incr(key);
+    if (count === 1) {
+      await this.redis.expire(key, windowSeconds);
+    }
+    const ttl = await this.redis.ttl(key);
+    return { count, ttl: ttl > 0 ? ttl : windowSeconds };
   }
 }
