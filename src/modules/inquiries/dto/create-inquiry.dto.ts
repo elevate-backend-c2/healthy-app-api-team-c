@@ -20,6 +20,7 @@ function sanitize(value: unknown): string {
     ALLOWED_ATTR: [],
     KEEP_CONTENT: true,
   });
+  // eslint-disable-next-line
   return stripped.replace(/[\u0000-\u001F\u007F]/g, '').trim();
 }
 
