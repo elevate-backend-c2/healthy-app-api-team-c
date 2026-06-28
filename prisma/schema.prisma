@@ -14,6 +14,7 @@ model User {
   id           String     @id @default(uuid())
   name         String
   email        String     @unique
+  stripeCustomerId String? @unique @map("stripe_customer_id")
   gender       Gender
   passwordHash String
   status       UserStatus @default(PENDING_VERIFICATION)
