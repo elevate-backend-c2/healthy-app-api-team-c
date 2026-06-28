@@ -14,9 +14,10 @@ import { MulterModule } from '@nestjs/platform-express';
 import type { Request } from 'express';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
-import { PaymentsModule } from "./payments/payments.module"
+import { PaymentsModule } from './payments/payments.module';
 import { DoctorProfileModule } from './modules/doctor-profile/doctor-profile.module';
 import { ConfigurationModule } from './modules/config/config.module';
+import { InquiriesModule } from './modules/inquiries/inquiries.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { ConfigurationModule } from './modules/config/config.module';
     DoctorProfileModule,
     DoctorsModule,
     ConfigurationModule,
+    InquiriesModule,
   ],
   controllers: [],
   providers: [
@@ -94,4 +96,4 @@ import { ConfigurationModule } from './modules/config/config.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

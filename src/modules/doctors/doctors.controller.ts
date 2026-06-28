@@ -9,7 +9,7 @@ import {
   Post,
   Query,
   Req,
-  // ,UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,11 +28,11 @@ import { type AuthRequest } from '../../common/types/request.type';
 import { AppendHistoryDto } from './dto/append-history.dto';
 import { AutocompleteResponseDto } from './dto/auto-complete-response.dto';
 import { RecentSearchResponseDto } from './dto/recent-search-response.dto';
-// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Doctors')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('doctors')
 export class DoctorsController {
   constructor(private readonly doctorsService: DoctorsService) {}
